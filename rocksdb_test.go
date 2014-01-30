@@ -1,4 +1,4 @@
-package levigo
+package rocksdb
 
 import (
 	"bytes"
@@ -14,7 +14,7 @@ func init() {
 	rand.Seed(int64(time.Now().Nanosecond()))
 }
 
-// This testcase is a port of leveldb's c_test.c.
+// This testcase is a port of rocksdb's c_test.c.
 func TestC(t *testing.T) {
 	dbname := tempDir(t)
 	defer deleteDBDirectory(t, dbname)
@@ -144,9 +144,9 @@ func TestC(t *testing.T) {
 	if prop != "" {
 		t.Errorf("property nosuchprop should not have a value")
 	}
-	prop = db.PropertyValue("leveldb.stats")
+	prop = db.PropertyValue("rocksdb.stats")
 	if prop == "" {
-		t.Errorf("property leveldb.stats should have a value")
+		t.Errorf("property rocksdb.stats should have a value")
 	}
 
 	// snapshot
@@ -348,7 +348,7 @@ func deleteDBDirectory(t *testing.T, dirPath string) {
 }
 
 func tempDir(t *testing.T) string {
-	bottom := fmt.Sprintf("levigo-test-%d", rand.Int())
+	bottom := fmt.Sprintf("rocksdb-test-%d", rand.Int())
 	path := filepath.Join(os.TempDir(), bottom)
 	deleteDBDirectory(t, path)
 	return path

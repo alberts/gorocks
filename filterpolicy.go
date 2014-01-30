@@ -1,8 +1,8 @@
-package levigo
+package rocksdb
 
-// #cgo LDFLAGS: -lleveldb
+// #cgo LDFLAGS: -lrocksdb
 // #include <stdlib.h>
-// #include "leveldb/c.h"
+// #include "rocksdb/c.h"
 import "C"
 
 // FilterPolicy is a factory type that allows the LevelDB database to create a
@@ -15,7 +15,7 @@ import "C"
 // To prevent memory leaks, a FilterPolicy must have Close called on it when
 // it is no longer needed by the program.
 type FilterPolicy struct {
-	Policy *C.leveldb_filterpolicy_t
+	Policy *C.rocksdb_filterpolicy_t
 }
 
 // NewBloomFilter creates a filter policy that will create a bloom filter when
@@ -23,10 +23,10 @@ type FilterPolicy struct {
 //
 // See the FilterPolicy documentation for more.
 func NewBloomFilter(bitsPerKey int) *FilterPolicy {
-	policy := C.leveldb_filterpolicy_create_bloom(C.int(bitsPerKey))
+	policy := C.rocksdb_filterpolicy_create_bloom(C.int(bitsPerKey))
 	return &FilterPolicy{policy}
 }
 
 func (fp *FilterPolicy) Close() {
-	C.leveldb_filterpolicy_destroy(fp.Policy)
+	C.rocksdb_filterpolicy_destroy(fp.Policy)
 }

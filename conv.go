@@ -1,6 +1,6 @@
-package levigo
+package rocksdb
 
-// #include "leveldb/c.h"
+// #include "rocksdb/c.h"
 import "C"
 
 func boolToUchar(b bool) C.uchar {
