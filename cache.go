@@ -1,4 +1,4 @@
-package rocksdb
+package gorocks
 
 // #include <stdint.h>
 // #include "rocksdb/c.h"

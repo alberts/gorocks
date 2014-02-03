@@ -1,27 +1,18 @@
 /*
+Package gorocks provides the ability to create and access RocksDB databases.
 
-Package rocksdb is a fork of the levigo package with the identifiers changed to target rocksdb and
-the package name changed to rocksdb.
+gorocks.Open opens and creates databases.
 
-This was accomplished by running a sed script over the source code.
-Many thanks to Jeff Hodges for creating levigo without which this package would not exist.
-
-Original package documentation follows.
-
-Package rocksdb provides the ability to create and access LevelDB databases.
-
-rocksdb.Open opens and creates databases.
-
-	opts := rocksdb.NewOptions()
-	opts.SetCache(rocksdb.NewLRUCache(3<<30))
+	opts := gorocks.NewOptions()
+	opts.SetCache(gorocks.NewLRUCache(3<<30))
 	opts.SetCreateIfMissing(true)
-	db, err := rocksdb.Open("/path/to/db", opts)
+	db, err := gorocks.Open("/path/to/db", opts)
 
 The DB struct returned by Open provides DB.Get, DB.Put and DB.Delete to modify
 and query the database.
 
-	ro := rocksdb.NewReadOptions()
-	wo := rocksdb.NewWriteOptions()
+	ro := gorocks.NewReadOptions()
+	wo := gorocks.NewWriteOptions()
 	// if ro and wo are not used again, be sure to Close them.
 	data, err := db.Get(ro, []byte("key"))
 	...
@@ -33,7 +24,7 @@ For bulk reads, use an Iterator. If you want to avoid disturbing your live
 traffic while doing the bulk read, be sure to call SetFillCache(false) on the
 ReadOptions you use when creating the Iterator.
 
-	ro := rocksdb.NewReadOptions()
+	ro := gorocks.NewReadOptions()
 	ro.SetFillCache(false)
 	it := db.NewIterator(ro)
 	defer it.Close()
@@ -48,7 +39,7 @@ ReadOptions you use when creating the Iterator.
 Batched, atomic writes can be performed with a WriteBatch and
 DB.Write.
 
-	wb := rocksdb.NewWriteBatch()
+	wb := gorocks.NewWriteBatch()
 	// defer wb.Close or use wb.Clear and reuse.
 	wb.Delete([]byte("removed"))
 	wb.Put([]byte("added"), []byte("data"))
@@ -60,15 +51,15 @@ filter to your database. NewBloomFilter and Options.SetFilterPolicy is what
 you want. NewBloomFilter is amount of bits in the filter to use per key in
 your database.
 
-	filter := rocksdb.NewBloomFilter(10)
+	filter := gorocks.NewBloomFilter(10)
 	opts.SetFilterPolicy(filter)
-	db, err := rocksdb.Open("/path/to/db", opts)
+	db, err := gorocks.Open("/path/to/db", opts)
 
 If you're using a custom comparator in your code, be aware you may have to
 make your own filter policy object.
 
-This documentation is not a complete discussion of LevelDB. Please read the
-LevelDB documentation <http://code.google.com/p/rocksdb> for information on
-its operation. You'll find lots of goodies there.
+This documentation is not a complete discussion of RocksDB. Please read the
+RocksDB documentation <http://rocksdb.org/> for information on its
+operation. You'll find lots of goodies there.
 */
-package rocksdb
+package gorocks
