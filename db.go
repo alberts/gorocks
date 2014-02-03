@@ -1,26 +1,9 @@
 package rocksdb
 
 /*
-#cgo LDFLAGS: -lrocksdb
+#cgo linux LDFLAGS: -lrocksdb -lstdc++ -lm -lz -lbz2 -lsnappy
 #include <stdlib.h>
 #include "rocksdb/c.h"
-
-// This function exists only to clean up lack-of-const warnings when
-// rocksdb_approximate_sizes is called from Go-land.
-void rocksdb_rocksdb_approximate_sizes(
-    rocksdb_t* db,
-    int num_ranges,
-    char** range_start_key, const size_t* range_start_key_len,
-    char** range_limit_key, const size_t* range_limit_key_len,
-    uint64_t* sizes) {
-  rocksdb_approximate_sizes(db,
-                            num_ranges,
-                            (const char* const*)range_start_key,
-                            range_start_key_len,
-                            (const char* const*)range_limit_key,
-                            range_limit_key_len,
-                            sizes);
-}
 */
 import "C"
 
@@ -256,7 +239,7 @@ func (db *DB) GetApproximateSizes(ranges []Range) []uint64 {
 	startLensPtr := &startLens[0]
 	limitLensPtr := &limitLens[0]
 	sizesPtr := (*C.uint64_t)(&sizes[0])
-	C.rocksdb_rocksdb_approximate_sizes(
+	C.rocksdb_approximate_sizes(
 		db.Ldb, numranges, startsPtr, startLensPtr,
 		limitsPtr, limitLensPtr, sizesPtr)
 	for i := range ranges {

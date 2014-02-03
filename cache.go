@@ -1,6 +1,5 @@
 package rocksdb
 
-// #cgo LDFLAGS: -lrocksdb
 // #include <stdint.h>
 // #include "rocksdb/c.h"
 import "C"
