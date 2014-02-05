@@ -109,6 +109,14 @@ func (o *Options) SetWriteBufferSize(s int) {
 	C.rocksdb_options_set_write_buffer_size(o.Opt, C.size_t(s))
 }
 
+func (o *Options) SetMaxWriteBuffers(s int) {
+	C.rocksdb_options_set_max_write_buffer_number(o.Opt, C.int(s))
+}
+
+func (o *Options) SetMinWriteBuffersToMerge(s int) {
+	C.rocksdb_options_set_min_write_buffer_number_to_merge(o.Opt, C.int(s))
+}
+
 // SetParanoidChecks, when called with true, will cause the database to do
 // aggressive checking of the data it is processing and will stop early if it
 // detects errors.
@@ -171,6 +179,33 @@ func (o *Options) SetFilterPolicy(fp *FilterPolicy) {
 	C.rocksdb_options_set_filter_policy(o.Opt, policy)
 }
 
+// SetMaxBackgroundCompactions sets the maximum number of concurrent
+// background jobs, submitted to the default LOW priority thread pool
+func (o *Options) SetMaxBackgroundCompactions(n int) {
+	C.rocksdb_options_set_max_background_compactions(o.Opt, C.int(n))
+}
+
+// SetMaxBackgroundFlushes sets the maximum number of concurrent
+// background memtable flush jobs, submitted to the HIGH priority
+// thread pool. By default, all background jobs (major compaction
+// and memtable flush) go to the LOW priority pool. If this option
+// is set to a positive number, memtable flush jobs will be submitted
+// to the HIGH priority pool. It is important when the same Env is
+// shared by multiple db instances. Without a separate pool, long
+// running major compaction jobs could potentially block memtable
+// flush jobs of other db instances, leading to unnecessary Put stalls.
+func (o *Options) SetMaxBackgroundFlushes(n int) {
+	C.rocksdb_options_set_max_background_compactions(o.Opt, C.int(n))
+}
+
+// SetMemtableVectorRep causes MemTableReps that are backed by a
+// std::vector to be used. On iteration, the vector is sorted. This
+// is useful for workloads where iteration is very rare and writes
+// are generally not issued after reads begin.
+func (o *Options) SetMemtableVectorRep() {
+	C.rocksdb_options_set_memtable_vector_rep(o.Opt)
+}
+
 // Close deallocates the ReadOptions, freeing its underlying C struct.
 func (ro *ReadOptions) Close() {
 	C.rocksdb_readoptions_destroy(ro.Opt)
@@ -225,4 +260,10 @@ func (wo *WriteOptions) Close() {
 // See the LevelDB documentation for details.
 func (wo *WriteOptions) SetSync(b bool) {
 	C.rocksdb_writeoptions_set_sync(wo.Opt, boolToUchar(b))
+}
+
+// DisableWAL completely disables the Write Ahead Log. Writes will not go
+// to the log at all and may be lost in an event of process crash.
+func (wo *WriteOptions) DisableWAL(b bool) {
+	C.rocksdb_writeoptions_disable_WAL(wo.Opt, boolToInt(b))
 }

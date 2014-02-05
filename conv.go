@@ -4,16 +4,22 @@ package gorocks
 import "C"
 
 func boolToUchar(b bool) C.uchar {
-	uc := C.uchar(0)
 	if b {
-		uc = C.uchar(1)
+		return 1
 	}
-	return uc
+	return 0
 }
 
 func ucharToBool(uc C.uchar) bool {
-	if uc == C.uchar(0) {
+	if uc == 0 {
 		return false
 	}
 	return true
+}
+
+func boolToInt(b bool) C.int {
+	if b {
+		return 1
+	}
+	return 0
 }

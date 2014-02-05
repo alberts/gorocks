@@ -17,7 +17,7 @@ func (e DatabaseError) Error() string {
 	return string(e)
 }
 
-// DB is a reusable handle to a LevelDB database on disk, created by Open.
+// DB is a reusable handle to a RocksDB database on disk, created by Open.
 //
 // To avoid memory and file descriptor leaks, call Close when the process no
 // longer needs the handle. Calls to any DB method made after Close will
@@ -269,7 +269,7 @@ func (db *DB) PropertyValue(propName string) string {
 // returned must be released with DB.ReleaseSnapshot method on the DB that
 // created it.
 //
-// See the LevelDB documentation for details.
+// See the RocksDB documentation for details.
 func (db *DB) NewSnapshot() *Snapshot {
 	return &Snapshot{C.rocksdb_create_snapshot(db.Ldb)}
 }
