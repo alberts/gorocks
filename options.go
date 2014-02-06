@@ -3,6 +3,10 @@ package gorocks
 // #include "rocksdb/c.h"
 import "C"
 
+import (
+	"time"
+)
+
 // CompressionOpt is a value for Options.SetCompression.
 type CompressionOpt int
 
@@ -204,6 +208,39 @@ func (o *Options) SetMaxBackgroundFlushes(n int) {
 // are generally not issued after reads begin.
 func (o *Options) SetMemtableVectorRep() {
 	C.rocksdb_options_set_memtable_vector_rep(o.Opt)
+}
+
+func (o *Options) SetStatsDumpPeriod(period time.Duration) {
+	periodSec := C.uint(period.Seconds())
+	C.rocksdb_options_set_stats_dump_period_sec(o.Opt, periodSec)
+}
+
+func (o *Options) SetNumLevels(levels uint) {
+	C.rocksdb_options_set_stats_dump_period_sec(o.Opt, C.uint(levels))
+}
+
+func (o *Options) SetLevel0FileNumCompactionTrigger(n int) {
+	C.rocksdb_options_set_level0_file_num_compaction_trigger(o.Opt, C.int(n))
+}
+
+func (o *Options) SetLevel0SlowdownWritesTrigger(n int) {
+	C.rocksdb_options_set_level0_slowdown_writes_trigger(o.Opt, C.int(n))
+}
+
+func (o *Options) SetLevel0StopWritesTrigger(n int) {
+	C.rocksdb_options_set_level0_stop_writes_trigger(o.Opt, C.int(n))
+}
+
+func (o *Options) SetTargetFileSizeBase(n uint64) {
+	C.rocksdb_options_set_target_file_size_base(o.Opt, C.uint64_t(n))
+}
+
+func (o *Options) SetDisableSeekCompaction(b bool) {
+	C.rocksdb_options_set_disable_seek_compaction(o.Opt, boolToInt(b))
+}
+
+func (o *Options) SetMaxBytesForLevelBase(n uint64) {
+	C.rocksdb_options_set_max_bytes_for_level_base(o.Opt, C.uint64_t(n))
 }
 
 // Close deallocates the ReadOptions, freeing its underlying C struct.
