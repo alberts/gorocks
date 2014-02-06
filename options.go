@@ -215,8 +215,8 @@ func (o *Options) SetStatsDumpPeriod(period time.Duration) {
 	C.rocksdb_options_set_stats_dump_period_sec(o.Opt, periodSec)
 }
 
-func (o *Options) SetNumLevels(levels uint) {
-	C.rocksdb_options_set_stats_dump_period_sec(o.Opt, C.uint(levels))
+func (o *Options) SetNumLevels(levels int) {
+	C.rocksdb_options_set_num_levels(o.Opt, C.int(levels))
 }
 
 func (o *Options) SetLevel0FileNumCompactionTrigger(n int) {
