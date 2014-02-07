@@ -199,7 +199,7 @@ func (o *Options) SetMaxBackgroundCompactions(n int) {
 // running major compaction jobs could potentially block memtable
 // flush jobs of other db instances, leading to unnecessary Put stalls.
 func (o *Options) SetMaxBackgroundFlushes(n int) {
-	C.rocksdb_options_set_max_background_compactions(o.Opt, C.int(n))
+	C.rocksdb_options_set_max_background_flushes(o.Opt, C.int(n))
 }
 
 // SetMemtableVectorRep causes MemTableReps that are backed by a
@@ -241,6 +241,10 @@ func (o *Options) SetDisableSeekCompaction(b bool) {
 
 func (o *Options) SetMaxBytesForLevelBase(n uint64) {
 	C.rocksdb_options_set_max_bytes_for_level_base(o.Opt, C.uint64_t(n))
+}
+
+func (o *Options) EnableStatistics() {
+	C.rocksdb_options_enable_statistics(o.Opt)
 }
 
 // Close deallocates the ReadOptions, freeing its underlying C struct.
