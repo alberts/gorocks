@@ -16,6 +16,13 @@ const (
 	SnappyCompression = CompressionOpt(1)
 )
 
+type CompactionStyle int
+
+const (
+	LevelStyleCompaction     = CompactionStyle(0)
+	UniversalStyleCompaction = CompactionStyle(1)
+)
+
 // Options represent all of the available options when opening a database with
 // Open. Options should be created with NewOptions.
 //
@@ -245,6 +252,19 @@ func (o *Options) SetMaxBytesForLevelBase(n uint64) {
 
 func (o *Options) EnableStatistics() {
 	C.rocksdb_options_enable_statistics(o.Opt)
+}
+
+func (o *Options) SetCompactionStyle(style CompactionStyle) {
+	C.rocksdb_options_set_compaction_style(o.Opt, C.int(style))
+	// TODO this will leak if Options is discarded
+	uco := C.rocksdb_universal_compaction_options_create()
+	//C.rocksdb_universal_compaction_options_set_size_ratio(uco, ratio)
+	//C.rocksdb_universal_compaction_options_set_min_merge_width(uco, w)
+	C.rocksdb_universal_compaction_options_set_max_merge_width(uco, 16)
+	//C.rocksdb_universal_compaction_options_set_max_size_amplification_percent(uco, p)
+	//C.rocksdb_universal_compaction_options_set_compression_size_percent(uco, p)
+	//C.rocksdb_universal_compaction_options_set_stop_style(uco, style)
+	C.rocksdb_options_set_universal_compaction_options(o.Opt, uco)
 }
 
 // Close deallocates the ReadOptions, freeing its underlying C struct.
