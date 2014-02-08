@@ -258,12 +258,21 @@ func (o *Options) SetCompactionStyle(style CompactionStyle) {
 	C.rocksdb_options_set_compaction_style(o.Opt, C.int(style))
 	// TODO this will leak if Options is discarded
 	uco := C.rocksdb_universal_compaction_options_create()
+
 	//C.rocksdb_universal_compaction_options_set_size_ratio(uco, ratio)
+
 	//C.rocksdb_universal_compaction_options_set_min_merge_width(uco, w)
+
 	C.rocksdb_universal_compaction_options_set_max_merge_width(uco, 16)
-	//C.rocksdb_universal_compaction_options_set_max_size_amplification_percent(uco, p)
+
+	// Trigger compaction if size amplification exceeds 110%
+	C.rocksdb_universal_compaction_options_set_max_size_amplification_percent(uco, 110)
+
+	// TODO tune this so that we don't compress initially
 	//C.rocksdb_universal_compaction_options_set_compression_size_percent(uco, p)
+
 	//C.rocksdb_universal_compaction_options_set_stop_style(uco, style)
+
 	C.rocksdb_options_set_universal_compaction_options(o.Opt, uco)
 }
 
