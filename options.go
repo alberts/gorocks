@@ -276,6 +276,10 @@ func (o *Options) SetCompactionStyle(style CompactionStyle) {
 	C.rocksdb_options_set_universal_compaction_options(o.Opt, uco)
 }
 
+func (o *Options) SetMinLevelToCompress(level int) {
+	C.rocksdb_options_set_min_level_to_compress(o.Opt, C.int(level))
+}
+
 // Close deallocates the ReadOptions, freeing its underlying C struct.
 func (ro *ReadOptions) Close() {
 	C.rocksdb_readoptions_destroy(ro.Opt)
