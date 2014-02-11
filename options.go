@@ -246,6 +246,10 @@ func (o *Options) SetDisableSeekCompaction(b bool) {
 	C.rocksdb_options_set_disable_seek_compaction(o.Opt, boolToInt(b))
 }
 
+func (o *Options) SetDisableAutoCompactions(b bool) {
+	C.rocksdb_options_set_disable_auto_compactions(o.Opt, boolToInt(b))
+}
+
 func (o *Options) SetMaxBytesForLevelBase(n uint64) {
 	C.rocksdb_options_set_max_bytes_for_level_base(o.Opt, C.uint64_t(n))
 }
@@ -303,6 +307,10 @@ func (ro *ReadOptions) SetVerifyChecksums(b bool) {
 // See also Options.SetCache
 func (ro *ReadOptions) SetFillCache(b bool) {
 	C.rocksdb_readoptions_set_fill_cache(ro.Opt, boolToUchar(b))
+}
+
+func (ro *ReadOptions) SetTailing(b bool) {
+	C.rocksdb_readoptions_set_tailing(ro.Opt, boolToUchar(b))
 }
 
 // SetSnapshot causes reads to provided as they were when the passed in
