@@ -29,6 +29,11 @@ func (w *WriteBatch) Close() {
 	C.rocksdb_writebatch_destroy(w.wbatch)
 }
 
+// Count returns the number of items in the WriteBatch.
+func (w *WriteBatch) Count() int {
+	return int(C.rocksdb_writebatch_count(w.wbatch))
+}
+
 // Put places a key-value pair into the WriteBatch for writing later.
 //
 // Both the key and value byte slices may be reused as WriteBatch takes a copy

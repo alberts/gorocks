@@ -294,6 +294,36 @@ func (db *DB) CompactRange(r Range) {
 		db.Ldb, start, C.size_t(len(r.Start)), limit, C.size_t(len(r.Limit)))
 }
 
+type LiveFileMetadata struct {
+	Name        string
+	Level       int
+	Size        int64
+	SmallestKey []byte
+	LargestKey  []byte
+}
+
+func (db *DB) LiveFiles() []LiveFileMetadata {
+	lf := C.rocksdb_livefiles(db.Ldb)
+	defer C.rocksdb_livefiles_destroy(lf)
+
+	count := C.rocksdb_livefiles_count(lf)
+	liveFiles := make([]LiveFileMetadata, int(count))
+	for i := C.int(0); i < count; i++ {
+		var liveFile LiveFileMetadata
+		liveFile.Name = C.GoString(C.rocksdb_livefiles_name(lf, i))
+		liveFile.Level = int(C.rocksdb_livefiles_level(lf, i))
+		liveFile.Size = int64(C.rocksdb_livefiles_size(lf, i))
+		var size C.size_t
+		key := C.rocksdb_livefiles_smallestkey(lf, i, &size)
+		liveFile.SmallestKey = C.GoBytes(unsafe.Pointer(key), C.int(size))
+		key = C.rocksdb_livefiles_largestkey(lf, i, &size)
+		liveFile.LargestKey = C.GoBytes(unsafe.Pointer(key), C.int(size))
+		liveFiles[int(i)] = liveFile
+	}
+
+	return liveFiles
+}
+
 // Close closes the database, rendering it unusable for I/O, by deallocating
 // the underlying handle.
 //
