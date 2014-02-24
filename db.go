@@ -294,6 +294,12 @@ func (db *DB) CompactRange(r Range) {
 		db.Ldb, start, C.size_t(len(r.Start)), limit, C.size_t(len(r.Limit)))
 }
 
+func (db *DB) DeleteFile(name string) {
+	cname := C.CString(name)
+	defer C.free(unsafe.Pointer(cname))
+	C.rocksdb_delete_file(db.Ldb, cname)
+}
+
 type LiveFileMetadata struct {
 	Name        string
 	Level       int
