@@ -217,6 +217,14 @@ func (o *Options) SetMemtableVectorRep() {
 	C.rocksdb_options_set_memtable_vector_rep(o.Opt)
 }
 
+func (o *Options) SetAllowMmapReads(b bool) {
+	C.rocksdb_options_set_allow_mmap_reads(o.Opt, boolToUchar(b))
+}
+
+func (o *Options) SetAllowMmapWrites(b bool) {
+	C.rocksdb_options_set_allow_mmap_writes(o.Opt, boolToUchar(b))
+}
+
 func (o *Options) SetStatsDumpPeriod(period time.Duration) {
 	periodSec := C.uint(period.Seconds())
 	C.rocksdb_options_set_stats_dump_period_sec(o.Opt, periodSec)
